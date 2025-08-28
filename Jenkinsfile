@@ -18,6 +18,8 @@ spec:
       volumeMounts:
       - name: buildkit
         mountPath: /run/buildkit
+      securityContext:
+        privileged: true
 
     - name: docker
       image: docker:23.0.4-cli

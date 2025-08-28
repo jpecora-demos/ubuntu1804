@@ -11,11 +11,6 @@ spec:
     - name: docker
       image: docker:23.0.4-cli
       tty: true
-    - name: gh
-      image: maniator/gh:v2.78.0
-      command:
-        - /bin/cat
-      tty: true
 '''
         }
     }
@@ -78,18 +73,3 @@ spec:
         }
     }
 }
-
-
-pipeline {
-    agent any
-    stages {
-        stage('Build') {
-            steps {
-                // Build an image for scanning
-                sh 'echo "FROM ubuntu:latest" > Dockerfile'
-                sh 'docker build --no-cache -t ubuntu-image:0.1 .'
-            }
-        }
-    }
-}
-

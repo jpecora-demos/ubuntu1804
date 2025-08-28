@@ -4,6 +4,7 @@ pipeline {
 apiVersion: v1
 kind: Pod
 metadata:
+  name: wizagent
   namespace: jenkins
 spec:
   serviceAccountName: k8s-builder

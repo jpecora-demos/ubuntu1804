@@ -6,7 +6,7 @@ kind: Pod
 metadata:
   namespace: jenkins
 spec:
-  serviceAccountName: jenkins-buildx-agent
+  serviceAccountName: k8s-builder
   containers:
     - name: docker
       image: docker:23.0.4-cli

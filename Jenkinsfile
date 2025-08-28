@@ -97,6 +97,7 @@ spec:
         stage('Scan') {
             steps {
                 // Scanning the image
+                sh 'id'
                 sh 'ls -l /run/buildkit'
                 sh 'echo "Scanning the image using wizcli..."'
                 sh './wizcli docker scan --image ${APP_REPO}/${APP_NAME}:${GIT_COMMIT}'

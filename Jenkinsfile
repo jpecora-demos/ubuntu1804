@@ -16,6 +16,14 @@ spec:
       args:
         - --addr
         - unix:///run/buildkit/buildkitd.sock
+        - --addr
+        - tcp://0.0.0.0:1234
+        - --tlscacert
+        - /certs/ca.pem
+        - --tlscert
+        - /certs/cert.pem
+        - --tlskey
+        - /certs/key.pem
       securityContext:
         privileged: true
 '''
@@ -75,6 +83,7 @@ spec:
         stage('Scan') {
             steps {
                 // Scanning the image
+                sh 'ls -l /run/buildkit'
                 sh 'echo "Scanning the image using wizcli..."'
                 sh './wizcli docker scan --image ${APP_REPO}/${APP_NAME}:${GIT_COMMIT}'
             }

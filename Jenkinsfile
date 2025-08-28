@@ -12,6 +12,13 @@ spec:
   - name: buildkit
     emptyDir: {}
   containers:
+    - name: jnlp
+      image: 'jenkins/inbound-agent'
+      args: ['\$(JENKINS_SECRET)', '\$(JENKINS_NAME)']
+      volumeMounts:
+      - name: buildkit
+        mountPath: /run/buildkit
+
     - name: docker
       image: docker:23.0.4-cli
       tty: true

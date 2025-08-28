@@ -18,6 +18,7 @@ spec:
       volumeMounts:
       - name: buildkit
         mountPath: /run/buildkit
+
     - name: buildkitd
       image: moby/buildkit:master
       args:
@@ -25,7 +26,7 @@ spec:
         - unix:///run/buildkit/buildkitd.sock
         - --addr
         - tcp://0.0.0.0:1234
-      volumeMounts
+      volumeMounts:
       - name: buildkit
         mountPath: /run/buildkit
       securityContext:

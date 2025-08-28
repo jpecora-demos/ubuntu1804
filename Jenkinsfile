@@ -11,6 +11,11 @@ spec:
     - name: docker
       image: docker:23.0.4-cli
       tty: true
+    - name: gh
+      image: maniator/gh:v2.29.0
+      command:
+        - /bin/cat
+      tty: true
 '''
         }
     }
@@ -48,5 +53,43 @@ spec:
                 }
             }
         }
+        stage('Download_WizCLI') {
+            steps {
+                // Download_WizCLI
+                sh 'echo "Downloading wizcli..."'
+                sh 'curl -o wizcli https://downloads.wiz.io/wizcli/latest/wizcli-linux-amd64'
+                sh 'chmod +x wizcli'
+            }
+        }
+        stage('Auth_With_Wiz') {
+            steps {
+                // Auth with Wiz
+                sh 'echo "Authenticating to the Wiz API..."'
+                withCredentials([usernamePassword(credentialsId: 'wizcli', usernameVariable: 'ID', passwordVariable: 'SECRET')]) {
+                sh './wizcli auth --id $ID --secret $SECRET'}
+            }
+        }
+        stage('Scan') {
+            steps {
+                // Scanning the image
+                sh 'echo "Scanning the image using wizcli..."'
+                sh './wizcli docker scan --image ${APP_REPO}/${APP_NAME}:${GIT_COMMIT}'
+            }
+        }
     }
 }
+
+
+pipeline {
+    agent any
+    stages {
+        stage('Build') {
+            steps {
+                // Build an image for scanning
+                sh 'echo "FROM ubuntu:latest" > Dockerfile'
+                sh 'docker build --no-cache -t ubuntu-image:0.1 .'
+            }
+        }
+    }
+}
+

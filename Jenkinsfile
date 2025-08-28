@@ -11,6 +11,11 @@ spec:
     - name: docker
       image: docker:23.0.4-cli
       tty: true
+    - name: buildkitd
+      image: moby/buildkit:master
+      args:
+        - --addr
+        - unix:///run/buildkit/buildkitd.sock
 '''
         }
     }
@@ -18,6 +23,7 @@ spec:
         DOCKER_REGISTRY = "docker.io"
         APP_REPO = "${DOCKER_REGISTRY}/jpecora716"
         APP_NAME = "demo"
+        DOCKER_HOST = "/run/buildkit/buildkitd.sock"
     }
     stages {
 

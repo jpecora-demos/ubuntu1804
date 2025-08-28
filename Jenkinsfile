@@ -8,10 +8,16 @@ metadata:
   namespace: jenkins
 spec:
   serviceAccountName: k8s-builder
+  volumes:
+  - name: buildkit
+    emptyDir: {}
   containers:
     - name: docker
       image: docker:23.0.4-cli
       tty: true
+      volumeMounts:
+      - name: buildkit
+        mountPath: /run/buildkit
     - name: buildkitd
       image: moby/buildkit:master
       args:
@@ -19,6 +25,9 @@ spec:
         - unix:///run/buildkit/buildkitd.sock
         - --addr
         - tcp://0.0.0.0:1234
+      volumeMounts
+      - name: buildkit
+        mountPath: /run/buildkit
       securityContext:
         privileged: true
 '''

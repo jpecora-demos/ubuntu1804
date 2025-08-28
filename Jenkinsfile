@@ -18,12 +18,6 @@ spec:
         - unix:///run/buildkit/buildkitd.sock
         - --addr
         - tcp://0.0.0.0:1234
-        - --tlscacert
-        - /certs/ca.pem
-        - --tlscert
-        - /certs/cert.pem
-        - --tlskey
-        - /certs/key.pem
       securityContext:
         privileged: true
 '''

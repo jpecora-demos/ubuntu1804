@@ -12,7 +12,7 @@ spec:
       image: docker:23.0.4-cli
       tty: true
     - name: gh
-      image: maniator/gh:v2.29.0
+      image: maniator/gh:v2.78.0
       command:
         - /bin/cat
       tty: true

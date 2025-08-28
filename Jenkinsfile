@@ -16,6 +16,8 @@ spec:
       args:
         - --addr
         - unix:///run/buildkit/buildkitd.sock
+      securityContext:
+        privileged: true
 '''
         }
     }

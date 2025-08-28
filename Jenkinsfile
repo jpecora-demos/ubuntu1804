@@ -26,8 +26,8 @@ spec:
                 container("docker") {
                     // Configure the kubernetes builder
                     sh "docker buildx create --name k8s-builder --driver kubernetes --driver-opt replicas=1 --use"
-                    #// Registry login
-                    #sh 'echo ${DOCKER_PASSWORD} | docker login ${DOCKER_REGISTRY} --username ${DOCKER_USERNAME} --password-stdin'
+                    // Registry login
+                    //sh 'echo ${DOCKER_PASSWORD} | docker login ${DOCKER_REGISTRY} --username ${DOCKER_USERNAME} --password-stdin'
                 }
             }
         }

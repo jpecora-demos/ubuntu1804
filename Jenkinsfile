@@ -15,13 +15,6 @@ spec:
     - name: jnlp
       image: 'jenkins/inbound-agent'
       args: ['\$(JENKINS_SECRET)', '\$(JENKINS_NAME)']
-      volumeMounts:
-      - name: buildkit
-        mountPath: /run/buildkit
-      securityContext:
-        runAsUser: 0
-        fsGroup: 0
-        privileged: true
 
     - name: docker
       image: docker:23.0.4-cli
@@ -82,27 +75,26 @@ spec:
         }
         stage('Download_WizCLI') {
             steps {
-                // Download_WizCLI
-                sh 'echo "Downloading wizcli..."'
-                sh 'curl -o wizcli https://downloads.wiz.io/wizcli/latest/wizcli-linux-amd64'
-                sh 'chmod +x wizcli'
+                container("docker") {
+                    sh 'curl -o wizcli https://downloads.wiz.io/wizcli/latest/wizcli-linux-amd64'
+                    sh 'chmod +x wizcli'
+                }
             }
         }
         stage('Auth_With_Wiz') {
             steps {
-                // Auth with Wiz
-                sh 'echo "Authenticating to the Wiz API..."'
-                withCredentials([usernamePassword(credentialsId: 'wizcli', usernameVariable: 'ID', passwordVariable: 'SECRET')]) {
-                sh './wizcli auth --id $ID --secret $SECRET'}
+                container("docker") {
+                    withCredentials([usernamePassword(credentialsId: 'wizcli', usernameVariable: 'ID', passwordVariable: 'SECRET')]) {
+                    sh './wizcli auth --id $ID --secret $SECRET'}
+                }
             }
         }
         stage('Scan') {
             steps {
                 // Scanning the image
-                sh 'id'
-                sh 'ls -l /run/buildkit'
-                sh 'echo "Scanning the image using wizcli..."'
-                sh './wizcli docker scan --image ${APP_REPO}/${APP_NAME}:${GIT_COMMIT}'
+                container("docker") {
+                    sh './wizcli docker scan --image ${APP_REPO}/${APP_NAME}:${GIT_COMMIT}'
+                }
             }
         }
     }

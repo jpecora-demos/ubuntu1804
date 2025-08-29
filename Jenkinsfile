@@ -11,10 +11,15 @@ spec:
   volumes:
   - name: buildkit
     emptyDir: {}
+  - name: localbin
+    emptyDir: {}
   containers:
     - name: jnlp
       image: 'jenkins/inbound-agent'
       args: ['\$(JENKINS_SECRET)', '\$(JENKINS_NAME)']
+      volumeMounts:
+      - name: localbin
+        mountPath: /usr/local/bin
 
     - name: docker
       image: docker:23.0.4-cli
@@ -22,6 +27,8 @@ spec:
       volumeMounts:
       - name: buildkit
         mountPath: /run/buildkit
+      - name: localbin
+        mountPath: /usr/local/bin
 
     - name: buildkitd
       image: moby/buildkit:master
@@ -75,17 +82,15 @@ spec:
         }
         stage('Download_WizCLI') {
             steps {
-                container("docker") {
-                    sh 'curl -o wizcli https://downloads.wiz.io/wizcli/latest/wizcli-linux-amd64'
-                    sh 'chmod +x wizcli'
-                }
+                sh 'curl -o /usr/local/bin/wizcli https://downloads.wiz.io/wizcli/latest/wizcli-linux-amd64'
+                sh 'chmod +x /usr/local/bin/wizcli'
             }
         }
         stage('Auth_With_Wiz') {
             steps {
                 container("docker") {
                     withCredentials([usernamePassword(credentialsId: 'wizcli', usernameVariable: 'ID', passwordVariable: 'SECRET')]) {
-                    sh './wizcli auth --id $ID --secret $SECRET'}
+                    sh '/usr/local/bin/wizcli auth --id $ID --secret $SECRET'}
                 }
             }
         }
@@ -93,7 +98,7 @@ spec:
             steps {
                 // Scanning the image
                 container("docker") {
-                    sh './wizcli docker scan --image ${APP_REPO}/${APP_NAME}:${GIT_COMMIT}'
+                    sh '/usr/local/bin/wizcli docker scan --image ${APP_REPO}/${APP_NAME}:${GIT_COMMIT}'
                 }
             }
         }

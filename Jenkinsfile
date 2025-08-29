@@ -7,45 +7,10 @@ metadata:
   name: wizagent
   namespace: jenkins
 spec:
-  serviceAccountName: k8s-builder
-  volumes:
-  - name: buildkit
-    emptyDir: {}
-  - name: optbin
-    emptyDir: {}
-  - name: cache
-    emptyDir: {}
   containers:
-    - name: jnlp
-      image: 'jenkins/inbound-agent'
-      args: ['\$(JENKINS_SECRET)', '\$(JENKINS_NAME)']
-      volumeMounts:
-      - name: optbin
-        mountPath: /opt/bin
-
-    - name: docker
-      image: docker:28.3.3-cli
+    - name: podman
+      image: quay.io/podman/stable
       tty: true
-      volumeMounts:
-      - name: buildkit
-        mountPath: /run/buildkit
-      - name: cache
-        mountPath: /var/lib/docker
-      - name: optbin
-        mountPath: /opt/bin
-
-    - name: buildkitd
-      image: moby/buildkit:latest
-      args:
-        - --addr
-        - unix:///run/buildkit/buildkitd.sock
-        - --addr
-        - tcp://0.0.0.0:1234
-      volumeMounts:
-      - name: buildkit
-        mountPath: /run/buildkit
-      - name: cache
-        mountPath: /var/lib/buildkit
       securityContext:
         privileged: true
 '''
@@ -55,10 +20,10 @@ spec:
         DOCKER_REGISTRY = "docker.io"
         APP_REPO = "${DOCKER_REGISTRY}/jpecora716"
         APP_NAME = "demo"
-        DOCKER_HOST = "unix:///run/buildkit/buildkitd.sock"
+        DOCKER_HOST = "unix:///usr/lib/systemd/user/podman.socket"
     }
     stages {
-
+PP_REPO}/${APP_NAME}:${GIT_COMMIT}
         stage('Build CI image') {
             when {
                 allOf {
@@ -70,24 +35,26 @@ spec:
                 
             }
             steps {
-                container("buildkitd") {
+                container("podman") {
                     //sh "apk add --no-cache ca-certificates"
                     // NEW AND IMPROVED WAIT LOOP
                     //sh "docker buildx build -t ${APP_REPO}/${APP_NAME}:${GIT_COMMIT} ."
                     sh "ls -l"
-                    sh "buildctl build --frontend=dockerfile.v0 --local context=. --local dockerfile=."
+                    sh "podman build -t ${APP_REPO}/${APP_NAME}:${GIT_COMMIT} ."
                 }
             }
         }
         stage('Download_WizCLI') {
             steps {
-                sh 'curl -o /opt/bin/wizcli https://downloads.wiz.io/wizcli/latest/wizcli-linux-amd64'
-                sh 'chmod +x /opt/bin/wizcli'
+                container("podman") {
+                    sh 'curl -o /opt/bin/wizcli https://downloads.wiz.io/wizcli/latest/wizcli-linux-amd64'
+                    sh 'chmod +x /opt/bin/wizcli'
+                }
             }
         }
         stage('Auth_With_Wiz') {
             steps {
-                container("docker") {
+                container("podman") {
                     withCredentials([usernamePassword(credentialsId: 'wizcli', usernameVariable: 'ID', passwordVariable: 'SECRET')]) {
                     sh '/opt/bin/wizcli auth --id $ID --secret $SECRET'}
                 }
@@ -96,8 +63,8 @@ spec:
         stage('Scan') {
             steps {
                 // Scanning the image
-                container("docker") {
-                    sh 'docker images'
+                container("podman") {
+                    sh 'podman images'
                     sh '/opt/bin/wizcli docker scan --image ${APP_REPO}/${APP_NAME}:${GIT_COMMIT}'
                 }
             }

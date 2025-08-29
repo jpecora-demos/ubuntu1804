@@ -60,7 +60,7 @@ spec:
             steps {
                 // Scanning the image
                 container("podman") {
-                    catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                    catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE', message: 'Wiz found critical findings, review before deployment') {
                         sh 'podman system service --time 120 &'
                         sh './wizcli docker scan --image ${APP_REPO}/${APP_NAME}:${GIT_COMMIT}'
                         sh 'exit 1'

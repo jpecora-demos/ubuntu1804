@@ -23,7 +23,6 @@ spec:
         DOCKER_HOST = "unix:///usr/lib/systemd/user/podman.socket"
     }
     stages {
-PP_REPO}/${APP_NAME}:${GIT_COMMIT}
         stage('Build CI image') {
             when {
                 allOf {
@@ -36,9 +35,6 @@ PP_REPO}/${APP_NAME}:${GIT_COMMIT}
             }
             steps {
                 container("podman") {
-                    //sh "apk add --no-cache ca-certificates"
-                    // NEW AND IMPROVED WAIT LOOP
-                    //sh "docker buildx build -t ${APP_REPO}/${APP_NAME}:${GIT_COMMIT} ."
                     sh "ls -l"
                     sh "podman build -t ${APP_REPO}/${APP_NAME}:${GIT_COMMIT} ."
                 }

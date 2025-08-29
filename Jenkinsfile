@@ -20,7 +20,7 @@ spec:
         DOCKER_REGISTRY = "docker.io"
         APP_REPO = "${DOCKER_REGISTRY}/jpecora716"
         APP_NAME = "demo"
-        DOCKER_HOST = "unix:///usr/lib/systemd/user/podman.socket"
+        DOCKER_HOST = "unix:///run/podman/podman.sock"
     }
     stages {
         stage('Build CI image') {

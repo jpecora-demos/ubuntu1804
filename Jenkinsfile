@@ -69,6 +69,7 @@ spec:
             }
             steps {
                 container("docker") {
+                    sh "apk add --no-cache ca-certificates"
                     sh "docker buildx build -t ${APP_REPO}/${APP_NAME}:${GIT_COMMIT} ."
                 }
             }

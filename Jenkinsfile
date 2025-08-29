@@ -61,8 +61,9 @@ spec:
                 // Scanning the image
                 container("podman") {
                     catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE', message: 'Wiz found critical findings, review before deployment') {
+                        sh 'curl -o wiz-table-summary.py https://raw.githubusercontent.com/DanMolz/wiz-scripts/refs/heads/master/wiz-table-summary.py'
                         sh 'podman system service --time 120 &'
-                        sh './wizcli docker scan --image ${APP_REPO}/${APP_NAME}:${GIT_COMMIT} --driver mountWithLayers'
+                        sh 'python3 wiz-table-summary.py "$(./wizcli docker scan --image ${APP_REPO}/${APP_NAME}:${GIT_COMMIT} --driver mountWithLayersi -f json)'
                         sh 'exit 1'
                     }
                 }

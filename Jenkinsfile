@@ -13,6 +13,8 @@ spec:
     emptyDir: {}
   - name: optbin
     emptyDir: {}
+  - name: cache
+    emptyDir: {}
   containers:
     - name: jnlp
       image: 'jenkins/inbound-agent'
@@ -27,6 +29,8 @@ spec:
       volumeMounts:
       - name: buildkit
         mountPath: /run/buildkit
+      - name: cache
+        mountPath: /var/lib/docker
 
     - name: buildkitd
       image: moby/buildkit:master
@@ -38,6 +42,8 @@ spec:
       volumeMounts:
       - name: buildkit
         mountPath: /run/buildkit
+      - name: cache
+        mountPath: /var/lib/buildkit
       securityContext:
         privileged: true
 '''

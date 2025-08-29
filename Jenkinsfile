@@ -11,15 +11,15 @@ spec:
   volumes:
   - name: buildkit
     emptyDir: {}
-  - name: localbin
+  - name: optbin
     emptyDir: {}
   containers:
     - name: jnlp
       image: 'jenkins/inbound-agent'
       args: ['\$(JENKINS_SECRET)', '\$(JENKINS_NAME)']
       volumeMounts:
-      - name: localbin
-        mountPath: /usr/local/bin
+      - name: optbin
+        mountPath: /opt/bin
 
     - name: docker
       image: docker:23.0.4-cli
@@ -28,7 +28,7 @@ spec:
       - name: buildkit
         mountPath: /run/buildkit
       - name: localbin
-        mountPath: /usr/local/bin
+        mountPath: /opt/bin
 
     - name: buildkitd
       image: moby/buildkit:master
@@ -82,15 +82,15 @@ spec:
         }
         stage('Download_WizCLI') {
             steps {
-                sh 'curl -o /usr/local/bin/wizcli https://downloads.wiz.io/wizcli/latest/wizcli-linux-amd64'
-                sh 'chmod +x /usr/local/bin/wizcli'
+                sh 'curl -o /opt/bin/wizcli https://downloads.wiz.io/wizcli/latest/wizcli-linux-amd64'
+                sh 'chmod +x /opt/bin/wizcli'
             }
         }
         stage('Auth_With_Wiz') {
             steps {
                 container("docker") {
                     withCredentials([usernamePassword(credentialsId: 'wizcli', usernameVariable: 'ID', passwordVariable: 'SECRET')]) {
-                    sh '/usr/local/bin/wizcli auth --id $ID --secret $SECRET'}
+                    sh '/opt/bin/wizcli auth --id $ID --secret $SECRET'}
                 }
             }
         }

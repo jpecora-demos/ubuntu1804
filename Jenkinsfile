@@ -97,6 +97,7 @@ spec:
             steps {
                 // Scanning the image
                 container("docker") {
+                    sh 'docker images'
                     sh '/opt/bin/wizcli docker scan --image ${APP_REPO}/${APP_NAME}:${GIT_COMMIT}'
                 }
             }

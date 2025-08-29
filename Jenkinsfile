@@ -24,7 +24,7 @@ spec:
         mountPath: /opt/bin
 
     - name: docker
-      image: docker:23.0.4-cli
+      image: docker:28.3.3-cli
       tty: true
       volumeMounts:
       - name: buildkit

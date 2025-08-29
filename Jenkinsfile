@@ -68,8 +68,8 @@ spec:
                 
             }
             steps {
-                container("docker") {
-                    sh "apk add --no-cache ca-certificates"
+                container("buildkitd") {
+                    //sh "apk add --no-cache ca-certificates"
                     // NEW AND IMPROVED WAIT LOOP
                     sh '''
                         echo "Waiting for buildkitd daemon to be responsive..."
@@ -79,7 +79,9 @@ spec:
                         done
                         echo "\nBuildkitd is responsive!"
                     '''
-                    sh "docker buildx build -t ${APP_REPO}/${APP_NAME}:${GIT_COMMIT} ."
+                    //sh "docker buildx build -t ${APP_REPO}/${APP_NAME}:${GIT_COMMIT} ."
+                    sh "ls -l"
+                    sh "buildctl build --frontend=dockerfile.v0 --local context=. --local dockerfile=."
                 }
             }
         }

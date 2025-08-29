@@ -60,7 +60,7 @@ spec:
             steps {
                 // Scanning the image
                 container("podman") {
-                    sh 'podman images'
+                    sh 'podman system service'
                     sh './wizcli docker scan --image ${APP_REPO}/${APP_NAME}:${GIT_COMMIT}'
                 }
             }

@@ -19,6 +19,8 @@ spec:
       - name: buildkit
         mountPath: /run/buildkit
       securityContext:
+        runAsUser: 0
+        fsGroup: 0
         privileged: true
 
     - name: docker

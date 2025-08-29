@@ -31,6 +31,8 @@ spec:
         mountPath: /run/buildkit
       - name: cache
         mountPath: /var/lib/docker
+      - name: optbin
+        mountPath: /opt/bin
 
     - name: buildkitd
       image: moby/buildkit:latest

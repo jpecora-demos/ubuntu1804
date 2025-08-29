@@ -35,7 +35,7 @@ spec:
             }
             steps {
                 container("podman") {
-                    sh "ls -l"
+                    sh "dnf update && dnf install -y python3-prettytable python3-colorama"
                     sh "podman build -t ${APP_REPO}/${APP_NAME}:${GIT_COMMIT} ."
                 }
             }

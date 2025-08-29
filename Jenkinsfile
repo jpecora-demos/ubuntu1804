@@ -70,12 +70,14 @@ spec:
             steps {
                 container("docker") {
                     sh "apk add --no-cache ca-certificates"
+                    // NEW AND IMPROVED WAIT LOOP
                     sh '''
-                        echo "Waiting for buildkitd to be ready..."
-                        while [ ! -S /run/buildkit/buildkitd.sock ]; do
+                        echo "Waiting for buildkitd daemon to be responsive..."
+                        until docker buildx version > /dev/null 2>&1; do
+                          echo -n "."
                           sleep 1
                         done
-                        echo "Buildkitd is ready!"
+                        echo "\nBuildkitd is responsive!"
                     '''
                     sh "docker buildx build -t ${APP_REPO}/${APP_NAME}:${GIT_COMMIT} ."
                 }

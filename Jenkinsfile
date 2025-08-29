@@ -33,7 +33,7 @@ spec:
         mountPath: /var/lib/docker
 
     - name: buildkitd
-      image: moby/buildkit:stable
+      image: moby/buildkit:latest
       args:
         - --addr
         - unix:///run/buildkit/buildkitd.sock

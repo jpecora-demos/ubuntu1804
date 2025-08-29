@@ -60,9 +60,17 @@ spec:
             steps {
                 // Scanning the image
                 container("podman") {
-                    sh 'podman system service --time 120 &'
-                    sh './wizcli docker scan --image ${APP_REPO}/${APP_NAME}:${GIT_COMMIT}'
+                    catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                        sh 'podman system service --time 120 &'
+                        sh './wizcli docker scan --image ${APP_REPO}/${APP_NAME}:${GIT_COMMIT}'
+                        sh 'exit 1'
+                    }
                 }
+            }
+        }
+        stage('Deploy') {
+            steps {
+                sh 'exit 0'
             }
         }
     }

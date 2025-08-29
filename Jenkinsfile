@@ -27,8 +27,6 @@ spec:
       volumeMounts:
       - name: buildkit
         mountPath: /run/buildkit
-      - name: dockercache
-        mountPath: /run/buildkit
 
     - name: buildkitd
       image: moby/buildkit:master

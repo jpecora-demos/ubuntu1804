@@ -43,8 +43,8 @@ spec:
         stage('Download_WizCLI') {
             steps {
                 container("podman") {
-                    sh 'curl -o /opt/bin/wizcli https://downloads.wiz.io/wizcli/latest/wizcli-linux-amd64'
-                    sh 'chmod +x /opt/bin/wizcli'
+                    sh 'curl -o wizcli https://downloads.wiz.io/wizcli/latest/wizcli-linux-amd64'
+                    sh 'chmod +x wizcli'
                 }
             }
         }
@@ -52,7 +52,7 @@ spec:
             steps {
                 container("podman") {
                     withCredentials([usernamePassword(credentialsId: 'wizcli', usernameVariable: 'ID', passwordVariable: 'SECRET')]) {
-                    sh '/opt/bin/wizcli auth --id $ID --secret $SECRET'}
+                    sh './wizcli auth --id $ID --secret $SECRET'}
                 }
             }
         }
@@ -61,7 +61,7 @@ spec:
                 // Scanning the image
                 container("podman") {
                     sh 'podman images'
-                    sh '/opt/bin/wizcli docker scan --image ${APP_REPO}/${APP_NAME}:${GIT_COMMIT}'
+                    sh './wizcli docker scan --image ${APP_REPO}/${APP_NAME}:${GIT_COMMIT}'
                 }
             }
         }

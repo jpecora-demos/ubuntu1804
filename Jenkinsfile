@@ -27,7 +27,7 @@ spec:
       volumeMounts:
       - name: buildkit
         mountPath: /run/buildkit
-      - name: localbin
+      - name: optbin
         mountPath: /opt/bin
 
     - name: buildkitd

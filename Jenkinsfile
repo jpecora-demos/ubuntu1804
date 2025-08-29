@@ -35,7 +35,6 @@ spec:
             }
             steps {
                 container("podman") {
-                    sh "dnf update && dnf install -y python3-prettytable python3-colorama"
                     sh "podman build -t ${APP_REPO}/${APP_NAME}:${GIT_COMMIT} ."
                 }
             }
@@ -61,9 +60,8 @@ spec:
                 // Scanning the image
                 container("podman") {
                     catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE', message: 'Wiz found critical findings, review before deployment') {
-                        sh 'curl -o wiz-table-summary.py https://raw.githubusercontent.com/DanMolz/wiz-scripts/refs/heads/master/wiz-table-summary.py'
                         sh 'podman system service --time 120 &'
-                        sh 'python3 wiz-table-summary.py "$(./wizcli docker scan --image ${APP_REPO}/${APP_NAME}:${GIT_COMMIT} --driver mountWithLayers -f json 2> /dev/null)"'
+                        sh './wizcli docker scan --image ${APP_REPO}/${APP_NAME}:${GIT_COMMIT} --driver mountWithLayers -f json 2> /dev/null'
                         sh 'exit 1'
                     }
                 }

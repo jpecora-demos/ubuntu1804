@@ -61,8 +61,7 @@ spec:
                 container("podman") {
                     catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE', message: 'Wiz found critical findings, review before deployment') {
                         sh 'podman system service --time 120 &'
-                        sh './wizcli docker scan --image ${APP_REPO}/${APP_NAME}:${GIT_COMMIT} --driver mountWithLayers 2> /dev/null'
-                        sh 'exit 1'
+                        sh './wizcli docker scan --image ${APP_REPO}/${APP_NAME}:${GIT_COMMIT} --driver mountWithLayers 2> /dev/null && exit 1'
                     }
                 }
             }

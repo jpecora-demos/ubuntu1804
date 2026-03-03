@@ -42,7 +42,7 @@ spec:
         stage('Download_WizCLI') {
             steps {
                 container("podman") {
-                    sh 'curl -o wizcli https://downloads.wiz.io/wizcli/latest/wizcli-linux-amd64'
+                    sh 'curl -o wizcli https://downloads.wiz.io/v1/wizcli/latest/wizcli-linux-amd64'
                     sh 'chmod +x wizcli'
                 }
             }

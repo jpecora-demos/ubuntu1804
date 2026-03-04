@@ -24,15 +24,6 @@ spec:
     }
     stages {
         stage('Build CI image') {
-            when {
-                allOf {
-                    branch "main"
-                    not {
-                        buildingTag()
-                    }
-                }
-                
-            }
             steps {
                 container("podman") {
                     sh "podman build -t ${APP_REPO}/${APP_NAME}:${GIT_COMMIT} ."

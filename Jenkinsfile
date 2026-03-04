@@ -26,15 +26,7 @@ spec:
         stage('Build CI image') {
             steps {
                 container("podman") {
-                    podman 'build -t ${APP_REPO}/${APP_NAME}:${GIT_COMMIT} .'
-                }
-            }
-        }
-        stage('Download_WizCLI') {
-            steps {
-                container("podman") {
-                    curl '-o wizcli https://downloads.wiz.io/v1/wizcli/latest/wizcli-linux-amd64'
-                    chmod '+x wizcli'
+                    sh "podman build -t ${APP_REPO}/${APP_NAME}:${GIT_COMMIT} ."
                 }
             }
         }
@@ -43,15 +35,15 @@ spec:
                 // Scanning the image
                 container("podman") {
                     withCredentials([usernamePassword(credentialsId: 'wizcli', usernameVariable: 'WIZ_CLIENT_ID', passwordVariable: 'WIZ_CLIENT_SECRET')]) {
-                        podman 'system service --time 120 &'
-                        ./wizcli 'docker scan --image ${APP_REPO}/${APP_NAME}:${GIT_COMMIT} --driver mountWithLayers 2> /dev/null'
+                        sh 'podman system service --time 120 &'
+                        wizcli "docker scan --image ${APP_REPO}/${APP_NAME}:${GIT_COMMIT} --driver mountWithLayers 2> /dev/null"
                     }
                 }
             }
         }
         stage('Deploy') {
             steps {
-                'exit 0'
+                exit 0
             }
         }
     }

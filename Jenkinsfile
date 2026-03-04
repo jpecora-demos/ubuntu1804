@@ -34,8 +34,10 @@ spec:
             steps {
                 // Scanning the image
                 container("podman") {
-                    sh 'podman system service --time 120 &'
-                    wizcli "docker scan --image ${APP_REPO}/${APP_NAME}:${GIT_COMMIT} --driver mountWithLayers 2> /dev/null"
+                    withCredentials([usernamePassword(credentialsId: 'wizcli', usernameVariable: 'WIZ_CLIENT_ID', passwordVariable: 'WIZ_CLIENT_SECRET')]) {
+                        sh 'podman system service --time 120 &'
+                        wizcli "docker scan --image ${APP_REPO}/${APP_NAME}:${GIT_COMMIT} --driver mountWithLayers 2> /dev/null"
+                    }
                 }
             }
         }
